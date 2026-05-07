@@ -129,18 +129,27 @@ export const HomePane: React.FC<HomePaneProps> = ({ setActiveTab, setCategory, s
         }
 
         if (faqList && faqList.length > 0) {
-           const newFaqs: FaqItem[] = faqList.map((f: any, i: number) => ({
-             id: (!f.id || f.id === '留空') ? `q-${Date.now()}-${i+1}` : f.id,
-             category: catData?.name || 'default',
-             sub: f.sub || '',
-             middle: f.sub || '',
-             minor: f.minor || '',
-             question: f.question || '',
-             answerType: f.answerType || 'text',
-             answer: f.answer || '',
-             answerContent: f.answerContent || [],
-             files: f.files || []
-           }));
+           const newFaqs: FaqItem[] = faqList.map((f: any, i: number) => {
+             let parsedSub = '';
+             if (f.category && typeof f.category === 'string') {
+               const match = f.category.match(/[(（]([^)）]+)[)）]/);
+               if (match) {
+                 parsedSub = match[1];
+               }
+             }
+             return {
+              id: (!f.id || f.id === '留空') ? `q-${Date.now()}-${i+1}` : f.id,
+              category: catData?.name || catData?.label || 'default',
+              sub: parsedSub,
+              middle: f.sub || '',
+              minor: f.minor || '',
+              question: f.question || '',
+              answerType: f.answerType || 'text',
+              answer: f.answer || '',
+              answerContent: f.answerContent || [],
+              files: f.files || []
+             };
+           });
            setFaqs(newFaqs);
         }
         

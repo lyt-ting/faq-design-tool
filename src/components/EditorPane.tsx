@@ -940,8 +940,9 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
                                  files: parsed.files !== undefined ? parsed.files : newFaqs[i].files,
                                };
                                const catRaw = parsed.category || '';
-                               if (catRaw.includes('(')) {
-                                  newFaqs[i].sub = catRaw.split('(')[1].replace(')', '');
+                               const match = catRaw.match(/[(（]([^)）]+)[)）]/);
+                               if (match) {
+                                  newFaqs[i].sub = match[1];
                                } else {
                                   newFaqs[i].sub = '';
                                }

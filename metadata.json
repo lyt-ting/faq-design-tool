@@ -1,0 +1,6 @@
+{
+  "name": "FAQ 設計小幫手",
+  "description": "提供使用者從介面上自訂 FAQ 主題風格、分類與問答項目，並可一鍵匯出 Word (包含預覽圖與格式化的 JSON 資料) 交接給 IT 匯入使用。",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

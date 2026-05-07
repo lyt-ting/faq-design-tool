@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+.faq-preview-wrapper {
+  /* ===== FAQ Hub 全域 CSS 變數 ===== */
+  --faq-accent: #CD5D67;
+  --faq-focus-color: #CD5D67;
+  
+  font-family: inherit;
+  color: #334155;
+  background-color: #f8fafc;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+/* 復刻原版 CSS 中針對 Preview 內的 Sidebar */
+.faq-preview-wrapper .preview-sidebar {
+    background-color: white;
+    border-right: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 18rem;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.faq-preview-wrapper.mobile-view .preview-sidebar {
+    position: absolute;
+    top: 4.5rem;
+    left: 0;
+    bottom: 0;
+    width: 18rem;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.faq-preview-wrapper.mobile-view .preview-sidebar.open {
+    transform: translateX(0);
+}
+
+.faq-preview-wrapper .preview-header-mobile {
+    display: none;
+}
+.faq-preview-wrapper.mobile-view .preview-header-mobile {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4.5rem;
+    padding: 0 1.5rem;
+    background-color: white;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    z-index: 60;
+}
+
+.faq-preview-wrapper .preview-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 3rem;
+    background-color: #f8fafc;
+}
+.faq-preview-wrapper.mobile-view .preview-main {
+    padding: 6rem 1.5rem 2rem 1.5rem;
+}
+
+/* 按鈕樣式 */
+.faq-preview-wrapper .category-btn {
+    height: 40px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.75rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    background-color: transparent;
+    color: #475569;
+}
+
+.faq-preview-wrapper .category-btn:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--hover-color);
+}
+.faq-preview-wrapper .category-btn:hover:not(.active) svg {
+    color: var(--hover-color);
+}
+
+.faq-preview-wrapper .category-btn.active {
+    background-color: var(--active-bg);
+    color: #ffffff;
+}
+.faq-preview-wrapper .category-btn.active svg {
+    color: #ffffff;
+}
+
+/* 子選單樣式 */
+.faq-preview-wrapper .category-group-content {
+    width: 100%;
+    margin-top: 4px;
+}
+.faq-preview-wrapper .category-btn.sub-item {
+    padding-left: 2rem;
+    color: #475569;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+.faq-preview-wrapper .category-btn.sub-item:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #475569;
+}
+.faq-preview-wrapper .category-btn.sub-item:hover:not(.active) svg {
+    color: #475569;
+}
+.faq-preview-wrapper .category-btn.sub-item.active {
+    background-color: var(--sub-active-bg);
+    color: var(--sub-active-text);
+    font-weight: 700;
+}
+.faq-preview-wrapper .category-btn.sub-item.active svg {
+    color: var(--sub-active-text);
+}
+
+
+/* 聯絡窗口 */
+.faq-preview-wrapper .contact-card {
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    background: white;
+    border: 1px solid #f1f5f9;
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.8rem;
+}
+.faq-preview-wrapper .contact-card-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--faq-accent);
+}
+.faq-preview-wrapper .contact-title {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.faq-preview-wrapper .contact-desc {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* FAQ 卡片樣式 */
+.faq-preview-wrapper .faq-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.faq-preview-wrapper .faq-section-header::before {
+    content: '';
+    display: inline-block;
+    width: 0.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    background-color: var(--faq-accent);
+}
+.faq-preview-wrapper .faq-section-header h3 {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #475569;
+    margin: 0;
+}
+
+.faq-preview-wrapper .faq-card {
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    margin-bottom: 0.6rem;
+}
+.faq-preview-wrapper .faq-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+.faq-preview-wrapper .faq-card.active {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: #cbd5e1;
+}
+
+.faq-preview-wrapper .faq-minor-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+}
+
+.faq-preview-wrapper .faq-card-button {
+    width: 100%;
+    text-align: left;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.faq-preview-wrapper .faq-question-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.faq-preview-wrapper .faq-answer-pane {
+    font-size: 1rem;
+    line-height: 1.8;
+    padding: 1.25rem 1rem;
+    background-color: #f1f5f9;
+    margin: 0 1rem 1rem 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--faq-accent);
+}
+
+/* 附件樣式 */
+.faq-preview-wrapper .faq-file-item {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+}
+.faq-preview-wrapper .faq-file-item:hover {
+    border-color: var(--faq-accent);
+    background-color: #f8fafc;
+}
+.faq-preview-wrapper .faq-file-icon-wrapper {
+    background-color: #f8fafc;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

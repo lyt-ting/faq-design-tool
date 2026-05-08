@@ -69,11 +69,11 @@ export const ExportButton: React.FC<ExportButtonProps> = ({ category, faqs, prev
 
       // 2. Generate formatted JSON for Contacts
       const mappedContact = (category.contacts || []).reduce((acc, contact) => {
-        let key = "大分類英文ID留空";
+        let key = `大分類_${category.name}(id)`;
         if (contact.targetId !== 'main') {
           const sub = category.subcategories?.find(s => s.id === contact.targetId);
           if (sub) {
-            key = `子分類_${sub.name}_英文ID留空`;
+            key = `子分類_${sub.name}(id)`;
           }
         }
         acc[key] = {

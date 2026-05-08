@@ -99,10 +99,33 @@ export const HomePane: React.FC<HomePaneProps> = ({ setActiveTab, setCategory, s
              id: (!sub.id || sub.id === '留空') ? `sub-${Date.now()}-${i}` : sub.id
           }));
           
-          let actualContact = contact;
-          // If the contact block has exactly one key and it's an object, it might be { "categoryId": { title, items } }
-          if (contact && typeof contact === 'object' && !contact.id && Object.keys(contact).length === 1) {
-            actualContact = Object.values(contact)[0];
+          const newContacts: any[] = [];
+          if (contact && typeof contact === 'object' && !Array.isArray(contact)) {
+            Object.entries(contact).forEach(([key, val]: [string, any], idx) => {
+               if (typeof val === 'object' && val !== null) {
+                 let targetId = 'main';
+                 if (key.includes('子分類_')) {
+                    const subMatch = key.match(/子分類_(.*?)\(id\)/) || key.match(/子分類_(.*?)_英文ID留空/) || key.match(/子分類_(.*)/);
+                    const parsedSubName = subMatch ? subMatch[1] : '';
+                    const matchedSub = subCats.find((s: any) => s.name === parsedSubName);
+                    if (matchedSub) {
+                      targetId = matchedSub.id;
+                    } else if (subCats.length > 0) {
+                      // Fallback: match by index or just grab first if names mismatch but we know it's a sub
+                      targetId = subCats[0].id;
+                    }
+                 } else if (key.includes('大分類_')) {
+                    targetId = 'main';
+                 }
+                 
+                 newContacts.push({
+                    id: `contact-imported-${idx}`,
+                    targetId,
+                    title: val.title || '',
+                    desc: val.desc ? val.desc : (Array.isArray(val.items) ? val.items.map((it: any) => `${it.label || ''} ${it.value || ''}`).join('\n').trim() : '')
+                 });
+               }
+            });
           }
 
           const newCategory: CategoryConfig = {
@@ -113,16 +136,7 @@ export const HomePane: React.FC<HomePaneProps> = ({ setActiveTab, setCategory, s
             comment: catData.comment || '',
             hasSubcategories: !!(subCats && subCats.length > 0),
             subcategories: subCats,
-            contacts: actualContact ? [
-              {
-                id: 'contact-imported',
-                targetId: 'main',
-                title: actualContact?.title || '',
-                desc: actualContact?.desc 
-                 ? actualContact.desc 
-                 : (Array.isArray(actualContact?.items) ? actualContact.items.map((it: any) => `${it.label || ''} ${it.value || ''}`).join('\n').trim() : '')
-              }
-            ] : []
+            contacts: newContacts
           };
           
           setCategory(newCategory);

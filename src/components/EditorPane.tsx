@@ -458,12 +458,13 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
         
         <div className="space-y-4">
           {category.contacts?.map((contact, i) => {
-            const baseTargets = category.hasSubcategories && (category.subcategories?.length || 0) > 0
-              ? (category.subcategories || []).map(sub => ({ id: sub.id, name: `${sub.name || '未命名'}` }))
-              : [{ id: 'main', name: `${category.name || '未命名'}` }];
+            const baseTargets = [{ id: 'main', name: `大分類: ${category.name || '未命名'}` }];
+            if (category.hasSubcategories && (category.subcategories?.length || 0) > 0) {
+              baseTargets.push(...(category.subcategories || []).map(sub => ({ id: sub.id, name: `子分類: ${sub.name || '未命名'}` })));
+            }
             
             if (!baseTargets.find(t => t.id === contact.targetId)) {
-              baseTargets.push({ id: contact.targetId, name: contact.targetId === 'main' ? `${category.name || '未命名'} (請更換為子分類)` : '(未知分類)' });
+              baseTargets.push({ id: contact.targetId, name: contact.targetId === 'main' ? `大分類: ${category.name || '未命名'}` : '(未知分類)' });
             }
 
             const availableTargets = baseTargets.filter(t => t.id === contact.targetId || !category.contacts.find(c => c.targetId === t.id));
@@ -508,9 +509,10 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
           })}
           
           {(() => {
-            const baseTargets = category.hasSubcategories && (category.subcategories?.length || 0) > 0
-              ? (category.subcategories || []).map(sub => ({ id: sub.id, name: `${sub.name || '未命名'}` }))
-              : [{ id: 'main', name: `${category.name || '未命名'}` }];
+            const baseTargets = [{ id: 'main', name: `大分類: ${category.name || '未命名'}` }];
+            if (category.hasSubcategories && (category.subcategories?.length || 0) > 0) {
+              baseTargets.push(...(category.subcategories || []).map(sub => ({ id: sub.id, name: `子分類: ${sub.name || '未命名'}` })));
+            }
             
             const availableTargets = baseTargets.filter(t => !(category.contacts || []).find(c => c.targetId === t.id));
             

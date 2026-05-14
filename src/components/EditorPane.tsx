@@ -111,6 +111,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
   };
 
   const uniqueMiddleCategories = Array.from(new Set(faqs.map(f => f.middle).filter(Boolean)));
+  const uniqueMinorCategories = Array.from(new Set(faqs.map(f => f.minor).filter(Boolean)));
 
   const updateCat = (key: keyof CategoryConfig, val: any) => setCategory(prev => ({ ...prev, [key]: val }));
 
@@ -609,7 +610,17 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
                       </div>
                       <div className="flex-1 min-w-[120px]">
                         <label className="block text-slate-600 mb-1">小分類</label>
-                        <input type="text" className="w-full p-2 border border-slate-300 rounded focus:border-sky-500 outline-none" value={faq.minor} onChange={e => updateFaq(i, 'minor', e.target.value)} placeholder="自填小分類" />
+                        <input 
+                           type="text" 
+                           list={`minor-cat-list-${i}`}
+                           className="w-full p-2 border border-slate-300 rounded focus:border-sky-500 outline-none" 
+                           value={faq.minor} 
+                           onChange={e => updateFaq(i, 'minor', e.target.value)} 
+                           placeholder="自填小分類" 
+                        />
+                        <datalist id={`minor-cat-list-${i}`}>
+                           {uniqueMinorCategories.map((m, mIdx) => <option key={mIdx} value={m as string} />)}
+                        </datalist>
                       </div>
                     </div>
 

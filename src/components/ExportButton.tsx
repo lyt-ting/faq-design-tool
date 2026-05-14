@@ -44,6 +44,12 @@ export const ExportButton: React.FC<ExportButtonProps> = ({ category, faqs, prev
   const [loading, setLoading] = useState(false);
 
   const handleExport = async () => {
+    const missingMiddle = faqs.some(f => !f.middle || f.middle.trim() === '');
+    if (missingMiddle) {
+      alert("匯出失敗：每筆問答項目的「中分類」為必填欄位，請確認皆已填寫。");
+      return;
+    }
+    
     setLoading(true);
     try {
       // 1. Generate formatted JSON for Categories

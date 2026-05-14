@@ -594,14 +594,14 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
                         )}
                       </div>
                       <div className="flex-1 min-w-[120px]">
-                        <label className="block text-slate-600 mb-1">中分類</label>
+                        <label className="block text-slate-600 mb-1">中分類 <span className="text-red-500">*</span></label>
                         <input 
                            type="text" 
                            list={`middle-cat-list-${i}`}
                            className="w-full p-2 border border-slate-300 rounded focus:border-sky-500 outline-none" 
                            value={faq.middle || ''} 
                            onChange={e => updateFaq(i, 'middle', e.target.value)} 
-                           placeholder="可選或自訂填寫"
+                           placeholder="必填，請輸入中分類"
                         />
                         <datalist id={`middle-cat-list-${i}`}>
                            {uniqueMiddleCategories.map((m, mIdx) => <option key={mIdx} value={m as string} />)}

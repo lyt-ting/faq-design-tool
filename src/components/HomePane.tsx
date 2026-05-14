@@ -187,7 +187,7 @@ export const HomePane: React.FC<HomePaneProps> = ({ setActiveTab, setCategory, s
     <div 
       className="flex-1 overflow-y-auto p-12 bg-slate-50 relative"
       style={{
-        backgroundImage: 'url(/bg.png)',
+        backgroundImage: 'url(bg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'

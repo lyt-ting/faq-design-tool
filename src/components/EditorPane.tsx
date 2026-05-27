@@ -71,6 +71,27 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
   const [dragEnabledBlock, setDragEnabledBlock] = useState<string | null>(null);
   const dragRef = useRef<{ type: 'pane2' | 'pane3', startX: number, startWidth: number } | null>(null);
 
+  const [collapsedFaqs, setCollapsedFaqs] = useState<Record<number, boolean>>({});
+
+  const toggleFaqCollapse = (index: number) => {
+    setCollapsedFaqs(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
+  const collapseAll = () => {
+    const all: Record<number, boolean> = {};
+    faqs.forEach((_, i) => {
+      all[i] = true;
+    });
+    setCollapsedFaqs(all);
+  };
+
+  const expandAll = () => {
+    setCollapsedFaqs({});
+  };
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!dragRef.current) return;
@@ -546,6 +567,12 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
       <section className="mb-0 space-y-4">
         <div className="flex justify-between items-center border-b border-slate-200 pb-2">
           <h3 className="font-bold text-slate-700 text-lg">4. 問答項目編列</h3>
+          {faqs.length > 0 && (
+            <div className="flex gap-2">
+              <button onClick={expandAll} className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded transition-colors shadow-sm">全部展開</button>
+              <button onClick={collapseAll} className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded transition-colors shadow-sm">全部收合</button>
+            </div>
+          )}
         </div>
 
         <div className="space-y-6" style={{ '--pane2-width': typeof paneWidths.pane2 === 'number' ? `${paneWidths.pane2}px` : paneWidths.pane2, '--pane3-width': typeof paneWidths.pane3 === 'number' ? `${paneWidths.pane3}px` : paneWidths.pane3 } as React.CSSProperties}>
@@ -562,7 +589,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
                className="bg-white border text-left border-slate-200 shadow-sm rounded-xl overflow-hidden flex flex-col group/faq relative"
             >
                <div className="bg-slate-100 p-3 border-b border-slate-200 flex justify-between items-center shrink-0">
-                 <div className="flex items-center gap-2">
+                 <div className="flex items-center gap-1">
                    <div className="flex flex-col">
                      <button onClick={() => moveFaqUp(i)} disabled={i === 0} className={`text-slate-400 hover:text-slate-600 ${i === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}>
                        <Icons.ChevronUp size={16} />
@@ -571,16 +598,29 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
                        <Icons.ChevronDown size={16} />
                      </button>
                    </div>
-                   <span className="font-bold text-slate-700 text-sm">問題 {i + 1} ({faq.id})</span>
+                   <span className="font-bold text-slate-700 text-sm ml-2">問題 {i + 1} <span className="opacity-50">({faq.id})</span></span>
                  </div>
                  <div className="flex items-center gap-2">
+                    <button onClick={() => toggleFaqCollapse(i)} className="text-xs text-amber-700 bg-amber-100/50 hover:bg-amber-100 font-bold px-3 py-1.5 rounded transition-colors flex items-center gap-1" title={collapsedFaqs[i] ? "已收合" : "已展開"}>
+                      {collapsedFaqs[i] ? <><Icons.ChevronRight size={14} /> 收合</> : <><Icons.ChevronDown size={14} /> 展開</>}
+                    </button>
                     <button onClick={() => insertFaqAfter(i)} className="text-xs text-sky-600 bg-sky-50 hover:bg-sky-100 font-medium px-3 py-1.5 rounded transition-colors">+ 新增下一題</button>
                     <button onClick={() => removeFaq(i)} className="text-xs text-red-500 bg-red-50 hover:bg-red-100 font-medium px-3 py-1.5 rounded transition-colors">刪除此題</button>
                  </div>
                </div>
                
-               <div className="flex flex-col 2xl:flex-row divide-y 2xl:divide-y-0 relative border-t border-slate-200">
-                 {/* 1. 問答項目編列 */}
+               {collapsedFaqs[i] ? (
+                 <div className="p-4 text-sm text-slate-700 cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => toggleFaqCollapse(i)}>
+                    <div className="flex gap-2 text-xs text-slate-500 mb-1">
+                      <span className="font-semibold text-sky-600">{category.hasSubcategories && faq.sub ? `[${faq.sub}]` : (category.name || '未設定分類')}</span>
+                      {faq.middle && <span>/ {faq.middle}</span>}
+                      {faq.minor && <span>/ {faq.minor}</span>}
+                    </div>
+                    <div className="font-bold text-slate-800 line-clamp-1 truncate">{faq.question || <span className="text-slate-400 italic font-normal">未填寫題目...</span>}</div>
+                 </div>
+               ) : (
+                <div className="flex flex-col 2xl:flex-row divide-y 2xl:divide-y-0 relative border-t border-slate-200">
+                  {/* 1. 問答項目編列 */}
                  <div className="flex-1 p-5 space-y-4 text-sm min-w-0">
                     <h4 className="font-bold text-slate-700 mb-2 flex items-center gap-2"><div className="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xs">1</div>問答項目編列</h4>
                     <div className="flex flex-wrap gap-4">
@@ -966,6 +1006,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
                     </div>
                  </div>
                </div>
+               )}
             </div>
           ))}
           {faqs.length === 0 && (

@@ -72,6 +72,8 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
   const dragRef = useRef<{ type: 'pane2' | 'pane3', startX: number, startWidth: number } | null>(null);
 
   const [collapsedFaqs, setCollapsedFaqs] = useState<Record<number, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterSub, setFilterSub] = useState('all');
 
   const toggleFaqCollapse = (index: number) => {
     setCollapsedFaqs(prev => ({
@@ -575,6 +577,37 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
           )}
         </div>
 
+        {faqs.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div className="flex-1 flex items-center bg-white border border-slate-300 rounded px-3 py-2 shadow-sm focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500">
+              <Icons.Search size={16} className="text-slate-400 mr-2 shrink-0" />
+              <input 
+                type="text" 
+                placeholder="搜尋題目關鍵字..." 
+                className="w-full bg-transparent outline-none text-sm text-slate-700" 
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="sm:w-64 shrink-0">
+              <select 
+                className="w-full bg-white border border-slate-300 rounded px-3 py-2 text-sm text-slate-700 outline-none shadow-sm h-full"
+                value={filterSub}
+                onChange={e => setFilterSub(e.target.value)}
+              >
+                <option value="all">所有分類 (大分類/子分類)</option>
+                {!category.hasSubcategories ? (
+                  <option value="">大分類 ({category.name || '未命名'})</option>
+                ) : (
+                  category.subcategories.map(s => (
+                    <option key={s.id} value={s.name}>子分類 ({s.name || '未命名'})</option>
+                  ))
+                )}
+              </select>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-6" style={{ '--pane2-width': typeof paneWidths.pane2 === 'number' ? `${paneWidths.pane2}px` : paneWidths.pane2, '--pane3-width': typeof paneWidths.pane3 === 'number' ? `${paneWidths.pane3}px` : paneWidths.pane3 } as React.CSSProperties}>
           {faqs.length === 0 && (
             <div className="flex justify-center p-8 border-2 border-dashed border-slate-300 rounded-xl">
@@ -583,7 +616,11 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
               </button>
             </div>
           )}
-          {faqs.map((faq, i) => (
+          {faqs.map((faq, i) => {
+            if (searchQuery && (!faq.question || !faq.question.toLowerCase().includes(searchQuery.toLowerCase()))) return null;
+            if (filterSub !== 'all' && faq.sub !== filterSub) return null;
+            
+            return (
             <div 
                key={`${faq.id}-${i}`} 
                className="bg-white border text-left border-slate-200 shadow-sm rounded-xl overflow-hidden flex flex-col group/faq relative"
@@ -1008,7 +1045,8 @@ export const EditorPane: React.FC<EditorPaneProps> = ({ category, setCategory, f
                </div>
                )}
             </div>
-          ))}
+          );
+          })}
           {faqs.length === 0 && (
             <div className="text-center py-16 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50">
                <div className="text-slate-400 mb-3 flex justify-center"><Icons.MessageCircle className="w-12 h-12 opacity-50" /></div>
